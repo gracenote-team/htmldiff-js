@@ -39,5 +39,18 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
+  },
+  "release-it": {
+    "git": {
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true,
+      "push": true
+    },
+    "npm": {
+      "publish": true,
+      "registry": "https://npm.pkg.github.com"
+    }
   }
 }
