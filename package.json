@@ -1,6 +1,6 @@
 {
   "name": "@gracenote-team/htmldiff-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "JavaScript port of HtmlDiff.Net which is itself a C# port of HtmlDiff",
   "main": "./dist/htmldiff.min.js",
   "author": "Jordan Hitch",
