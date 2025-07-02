@@ -1,0 +1,42 @@
+name: Build and Upload npm Artifact
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Get package version
+        id: pkg
+        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
+      - name: Prepare npm artifact
+        run: |
+          mkdir -p htmldiff-${{ steps.pkg.outputs.VERSION }}
+          cp -r dist htmldiff-${{ steps.pkg.outputs.VERSION }}/
+          cp package.json htmldiff-${{ steps.pkg.outputs.VERSION }}/
+          cp README.md htmldiff-${{ steps.pkg.outputs.VERSION }}/ || true
+          cp LICENSE htmldiff-${{ steps.pkg.outputs.VERSION }}/ || true
+
+      - name: Upload npm artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: htmldiff-${{ steps.pkg.outputs.VERSION }}
+          path: htmldiff-${{ steps.pkg.outputs.VERSION }}
