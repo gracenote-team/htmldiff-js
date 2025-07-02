@@ -1,42 +1,39 @@
-name: Build and Upload npm Artifact
+name: Main branch workflow
 
 on:
   push:
-    branches: [master]
+    branches:
+      - "main"
   workflow_dispatch:
 
+concurrency:
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
+  cancel-in-progress: true
+
 jobs:
-  build:
+  validation:
+    name: Run validation & release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+      - name: Setup node
+        uses: actions/setup-node@v3
 
-      - name: Install dependencies
+      - name: Install
         run: npm ci
 
-      - name: Build package
-        run: npm run build
-
-      - name: Get package version
-        id: pkg
-        run: echo "version=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_OUTPUT
-
-      - name: Prepare npm artifact
+      - name: Lint & test
         run: |
-          mkdir -p htmldiff-${{ steps.pkg.outputs.version }}
-          cp -r dist htmldiff-${{ steps.pkg.outputs.version }}/
-          cp package.json htmldiff-${{ steps.pkg.outputs.version }}/
-          cp README.md htmldiff-${{ steps.pkg.outputs.version }}/ || true
-          cp LICENSE htmldiff-${{ steps.pkg.outputs.version }}/ || true
+          npm run lint |
+          npm run test
 
-      - name: Upload npm artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: htmldiff-${{ steps.pkg.outputs.version }}
-          path: htmldiff-${{ steps.pkg.outputs.version }}
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git config --global user.name "GitHub Action" |
+          git config --global user.email "github-action@users.noreply.github.com" |
+          git stash |
+          npm run release:ci
