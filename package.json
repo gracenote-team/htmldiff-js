@@ -1,6 +1,6 @@
 {
   "name": "@gracenote-team/htmldiff-js",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "JavaScript port of HtmlDiff.Net which is itself a C# port of HtmlDiff",
   "main": "./dist/htmldiff.min.js",
   "author": "Jordan Hitch",
@@ -38,7 +38,8 @@
     "webpack-cli": "^5.1.4"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/",
+    "access": "public"
   },
   "release-it": {
     "git": {
