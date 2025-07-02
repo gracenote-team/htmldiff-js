@@ -34,23 +34,12 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Configure git
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "github-action@users.noreply.github.com"
-
-      - name: Remove old .npmrc
-        run: rm -f .npmrc
-
-      - name: Set up .npmrc in project root for GitHub Packages
-        run: |
-          echo "@gracenote-team:registry=https://npm.pkg.github.com/" > .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run release
+          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Action" |
+          git config --global user.email "github-action@users.noreply.github.com" |
+          git stash |
+          npm run release
