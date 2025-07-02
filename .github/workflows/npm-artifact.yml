@@ -25,18 +25,18 @@ jobs:
 
       - name: Get package version
         id: pkg
-        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+        run: echo "version=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_OUTPUT
 
       - name: Prepare npm artifact
         run: |
-          mkdir -p htmldiff-${{ steps.pkg.outputs.VERSION }}
-          cp -r dist htmldiff-${{ steps.pkg.outputs.VERSION }}/
-          cp package.json htmldiff-${{ steps.pkg.outputs.VERSION }}/
-          cp README.md htmldiff-${{ steps.pkg.outputs.VERSION }}/ || true
-          cp LICENSE htmldiff-${{ steps.pkg.outputs.VERSION }}/ || true
+          mkdir -p htmldiff-${{ steps.pkg.outputs.version }}
+          cp -r dist htmldiff-${{ steps.pkg.outputs.version }}/
+          cp package.json htmldiff-${{ steps.pkg.outputs.version }}/
+          cp README.md htmldiff-${{ steps.pkg.outputs.version }}/ || true
+          cp LICENSE htmldiff-${{ steps.pkg.outputs.version }}/ || true
 
       - name: Upload npm artifact
         uses: actions/upload-artifact@v4
         with:
-          name: htmldiff-${{ steps.pkg.outputs.VERSION }}
-          path: htmldiff-${{ steps.pkg.outputs.VERSION }}
+          name: htmldiff-${{ steps.pkg.outputs.version }}
+          path: htmldiff-${{ steps.pkg.outputs.version }}
